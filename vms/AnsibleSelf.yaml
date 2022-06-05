@@ -1,0 +1,13 @@
+---
+ - hosts: all
+   become_method: sudo
+   
+ - name: Updating system
+   apt:
+    update_cache: yes
+    
+ - name: Install basic apps
+   apt:
+    name: vlc
+    state: present
+    
