@@ -1,27 +1,39 @@
 ---
 - name: install mariadb
-  hosts: wsapp
-  remote_user: ec2-user
+  hosts: "{{ myhosts }}"
+#  remote_user: ec2-user
   become: yes
 
 
-  vars:
-    mysql_port: 3306
+  vars_files:
+   - mariadb_vars.yaml
+    
 
   tasks:
   - name: Install mariadb
-    yum: name=mariadb-server state=latest
+    apt: name=mariadb-server state=latest
 
   - name: create mysql config file
     template: src=typo.cnf dest=/etc/typo.cnf
     notify: restart mariadb
 
   - name: create mariadb log file
-    file: path=/var/log/mysqld.log state=touch owner=mysql group=mysql mode=0775
+    file: path={{ log_path}}/mysqld.log state=touch owner=mysql group=mysql mode=0775
 
   - name:  start mariadb 
     service: name=mariadb state=started enabled=yes
 
+  - name: get date on server
+    shell: date
+    register: output
+
+  - debug: msg="The date on Server is {{output.stdout}}"
+  - debug: var=ansible_distribution_version
+  - name: group some machines together
+    group_by: key=rhel_{{ansible_distribution_version}}
+    register: group_result
+
+  - debug: var=group_result
   handlers:
    - name: restart mariadb
      service: 
