@@ -1,0 +1,11 @@
+---
+ - name: Linux Shell Commands
+   hosts: all
+   remote_user: vagrant
+   tasks:
+     - name: Ubuntu Release
+       shell: cat /etc/lsb-release
+       register: output
+   
+     - debug: msg="{{output.stdout}}"
+     - debug: var=DISTRIB_DESCRIPTION

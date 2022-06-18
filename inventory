@@ -1,0 +1,17 @@
+[app]
+192.168.60.4
+192.168.60.5
+
+
+# Database server
+[db]
+192.168.60.6
+
+[app:vars]
+
+
+# Group 'multi' with all servers
+#[multi:children]
+#app
+#db
+
